@@ -1,7 +1,4 @@
 # LiveKit configuration for Matrix video calls
-#
-# Keys can be generated with:
-#   python3 -c "import secrets; print(secrets.token_hex(32))"
 
 port: 7880
 bind_addresses:
@@ -20,8 +17,7 @@ redis:
 turn:
   enabled: false
 
-# API key and secret - must match LIVEKIT_KEY and LIVEKIT_SECRET in docker-compose
-# Generate new keys with: python3 -c "import secrets; print(secrets.token_hex(32))"
+# API key and secret
 keys:
   matrix: REPLACE_WITH_GENERATED_SECRET
 
