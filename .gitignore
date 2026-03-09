@@ -1,0 +1,19 @@
+# Environment files
+.env
+
+# Synapse data (generated at runtime)
+synapse/data/*.db
+synapse/data/*.db-shm
+synapse/data/*.db-wal
+synapse/data/media_store/
+synapse/data/*.signing.key
+
+# PostgreSQL data
+postgres/data/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
