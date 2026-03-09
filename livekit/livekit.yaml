@@ -1,0 +1,37 @@
+# LiveKit configuration for Matrix video calls
+#
+# Keys can be generated with:
+#   python3 -c "import secrets; print(secrets.token_hex(32))"
+
+port: 7880
+bind_addresses:
+  - "0.0.0.0"
+rtc:
+  udp_port: 7882
+  tcp_port: 7881
+  use_external_ip: false
+  # Replace with your server's public IP
+  node_ip: YOUR_PUBLIC_IP
+
+redis:
+  address: ""
+
+# TURN is not required since LiveKit is accessible via public IP/domain
+turn:
+  enabled: false
+
+# API key and secret - must match LIVEKIT_KEY and LIVEKIT_SECRET in docker-compose
+# Generate new keys with: python3 -c "import secrets; print(secrets.token_hex(32))"
+keys:
+  matrix: REPLACE_WITH_GENERATED_SECRET
+
+# Logging
+logging:
+  level: info
+  sample: false
+
+# Room settings
+room:
+  auto_create: true
+  empty_timeout: 300
+  max_participants: 20

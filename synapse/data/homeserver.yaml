@@ -1,0 +1,61 @@
+# Configuration file for Synapse.
+# Copy this to your server's synapse data dir.
+#
+# IMPORTANT: Generate new secrets using:
+#   python3 -c "import secrets; print(secrets.token_hex(32))"
+
+server_name: "YOUR_MATRIX_DOMAIN"
+pid_file: /data/homeserver.pid
+listeners:
+  - port: 8008
+    resources:
+      - compress: false
+        names:
+          - client
+          - federation
+    tls: false
+    type: http
+    x_forwarded: true
+database:
+  name: sqlite3
+  args:
+    database: /data/homeserver.db
+log_config: "/data/log.config"
+media_store_path: /data/media_store
+registration_shared_secret: "REPLACE_WITH_GENERATED_SECRET"
+enable_registration: false
+registration_requires_token: true
+enable_authenticated_media: false
+report_stats: false
+macaroon_secret_key: "REPLACE_WITH_GENERATED_SECRET"
+form_secret: "REPLACE_WITH_GENERATED_SECRET"
+signing_key_path: "/data/SERVER_NAME.signing.key"
+trusted_key_servers:
+  - server_name: "matrix.org"
+
+# Matrix RTC (voice/video calls via LiveKit)
+# TURN is not required if LiveKit is accessible via public IP/domain
+experimental_features:
+  msc3266_enabled: true
+  msc4222_enabled: true
+  msc3916_authenticated_media_enabled: false
+  msc4140_enabled: true
+  max_event_delay_duration: 24h
+  msc_message:
+    per_second: 0.5
+    burst_count: 30
+  src_delayed_event_mgmt:
+    per_second: 1
+    burst_count: 20
+
+# URL previews
+url_preview_enabled: true
+url_preview_ip_range_blacklist:
+  - 127.0.0.0/8
+  - 10.0.0.0/8
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - 100.64.0.0/10
+  - 169.254.0.0/16
+
+# vim:ft=yaml

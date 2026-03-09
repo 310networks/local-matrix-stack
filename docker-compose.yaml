@@ -1,0 +1,63 @@
+services:
+  # Matrix Synapse
+  synapse:
+    image: matrixdotorg/synapse:latest 
+    container_name: matrix-synapse
+    restart: unless-stopped
+    environment:
+      - SYNAPSE_SERVER_NAME=${MATRIX_SERVER_NAME}
+      - SYNAPSE_REPORT_STATS=no
+    volumes:
+      - ./synapse/data:/data
+    ports:
+      - "8008:8008"
+    networks:
+      - matrix
+
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: matrix-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=synapse
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=synapse
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --locale=C
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+    networks:
+      - matrix
+
+  livekit:
+    image: livekit/livekit-server:latest
+    container_name: matrix-livekit
+    restart: unless-stopped
+    network_mode: host
+    command: --config /etc/livekit.yaml --bind 0.0.0.0
+    volumes:
+      - ./livekit/livekit.yaml:/etc/livekit.yaml
+    ports:
+      - "7882:7882"
+
+  lk-jwt-service:
+    image: ghcr.io/element-hq/lk-jwt-service:latest
+    container_name: matrix-lk-jwt
+    restart: unless-stopped
+    environment:
+      - LIVEKIT_URL=${LIVEKIT_URL}
+      - LIVEKIT_KEY=matrix
+      - LIVEKIT_SECRET=${LIVEKIT_SECRET}
+      - LIVEKIT_FULL_ACCESS_HOMESERVERS=${MATRIX_SERVER_NAME}
+    extra_hosts:
+      - "${LIVEKIT_DOMAIN}:${REVERSE_PROXY_IP}"
+    ports:
+      - "8070:8080"
+    networks:
+      - matrix
+    depends_on:
+      - livekit
+
+networks:
+  matrix:
+    driver: bridge
